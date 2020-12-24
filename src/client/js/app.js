@@ -1,6 +1,13 @@
 let weatherBitApiKey = ''
 let pixabayApiKey = ''
 
+class TripInfo {
+    constructor(temp = 0.0, url = '') {
+        this.temp = temp
+        this.url = url
+    }
+}
+
 async function fetchData(url = '') {
     return fetch(url).then(data => data.json())
 }
@@ -28,20 +35,39 @@ async function fetchTypicalWeather(lat = 0.0, lng = 0.0, date = '01-01') {
     return fetchData(url)
 }
 
-async function fetchTripInfo(destination = '', date = '') {
+async function fetchWeatherInfo(destination = '', date = '') {
     return fetchCoords(destination)
         .then(data => {
             const result = data.geonames[0]
             return fetchTypicalWeather(result.lat, result.lng, date)
         })
         .then(data => data.data[0])
-        .catch(e => console.log(e))
 }
 
-function updateUI(data = {}) {
-    const div = document.getElementById('result')
+async function fetchImage(query = '') {
+    const url = `https://pixabay.com/api/?q=${query}&key=${pixabayApiKey}`
+    return fetchData(url)
+        .then(data => data.hits[0].webformatURL)
+}
+
+async function fetchTripInfo(destination = '', date = '') {
+    return Promise.all([fetchWeatherInfo(destination, date), fetchImage(destination)])
+        .then(results => {
+            const weatherInfo = results[0]
+            const imgUrl = results[1]
+            return new TripInfo(weatherInfo.temp, imgUrl)
+        })
+}
+
+let defaultTripInfo = new TripInfo()
+
+const resultDiv = document.getElementById('result')
+
+function updateUI(data = defaultTripInfo) {
+    console.log(data)
     const temp = data.temp
-    div.innerHTML = `<h3>${temp}&#176;F</h3>`
+    const url = data.url
+    resultDiv.innerHTML = `<h3>${temp}&#176;F and ${url}</h3>`
 }
 
 fetchWeatherBitApiKey()
@@ -50,7 +76,12 @@ fetchPixabayApiKey()
 document.getElementById('enter').addEventListener('click', () => {
     const date = document.getElementById('start').value
     const destination = document.getElementById('name').value
+    resultDiv.innerHTML = `<h3>...</h3>`
     fetchTripInfo(destination, date.slice(5))
         .then(data => updateUI(data))
+        .catch(e => {
+            console.log(e)
+            resultDiv.innerHTML = `<h3>An error occured</h3>`
+        })
 })
 
