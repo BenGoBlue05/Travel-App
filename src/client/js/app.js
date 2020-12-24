@@ -14,8 +14,7 @@ function fetchPixabayApiKey() {
         .catch(e => console.log('Error:', e))
 }
 
-export function run() {
-    fetchWeatherBitApiKey()
-    fetchPixabayApiKey()
-}
+
+fetchWeatherBitApiKey()
+fetchPixabayApiKey()
 
