@@ -64,10 +64,9 @@ let defaultTripInfo = new TripInfo()
 const resultDiv = document.getElementById('result')
 
 function updateUI(data = defaultTripInfo) {
-    console.log(data)
     const temp = data.temp
     const url = data.url
-    resultDiv.innerHTML = `<h3>${temp}&#176;F and ${url}</h3>`
+    resultDiv.innerHTML = `<img src="${url}" alt="Background image" width="600" height="400"><h3>${temp}&#176;F</h3>`
 }
 
 fetchWeatherBitApiKey()
