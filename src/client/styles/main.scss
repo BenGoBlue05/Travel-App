@@ -1,3 +1,22 @@
+@use "@material/theme" with (
+  $primary: #fcb8ab,
+  $secondary: #feeae6,
+  $on-primary: #442b2d,
+  $on-secondary: #442b2d,
+);
+@import "@material/button/mdc-button";
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  width: 300px;
+  margin: auto;
+}
+
+.button-container button {
+  margin: 3px;
+}
+
 label {
   display: block;
   font: 1rem 'Fira Sans', sans-serif;
