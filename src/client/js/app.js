@@ -63,10 +63,30 @@ let defaultTripInfo = new TripInfo()
 
 const resultDiv = document.getElementById('result')
 
-function updateUI(data = defaultTripInfo) {
-    const temp = data.temp
-    const url = data.url
-    resultDiv.innerHTML = `<img src="${url}" alt="Background image" width="600" height="400"><h3>${temp}&#176;F</h3>`
+function updateUI(data = defaultTripInfo, title = '', subtitle = '') {
+    resultDiv.innerHTML = uiHtml(title, subtitle, data.url, `${data.temp}&#176;F`)
+}
+
+function uiHtml(title = '', subtitle = '', img = '', body = '') {
+    return `<div>
+        <h2 class="mdc-typography mdc-typography--headline6">${title}</h2>
+        <h3 class="mdc-typography mdc-typography--subtitle2">${subtitle}</h3>
+    </div>
+    <div class="mdc-card__primary-action" tabindex="0">
+        <div class="mdc-card__media mdc-card__media--16-9"
+             style="background-image: url(${img});"></div>
+        <div class="mdc-typography mdc-typography--body2">${body}</div>
+    </div>
+    <div class="mdc-card__actions">
+        <div class="mdc-card__action-buttons">
+            <button class="mdc-button mdc-card__action mdc-card__action--button"><span
+                    class="mdc-button__ripple"></span> Save
+            </button>
+            <button class="mdc-button mdc-card__action mdc-card__action--button"><span
+                    class="mdc-button__ripple"></span> Delete
+            </button>
+        </div>
+    </div>`
 }
 
 fetchWeatherBitApiKey()
@@ -77,7 +97,7 @@ document.getElementById('enter').addEventListener('click', () => {
     const destination = document.getElementById('name').value
     resultDiv.innerHTML = `<h3>...</h3>`
     fetchTripInfo(destination, date.slice(5))
-        .then(data => updateUI(data))
+        .then(data => updateUI(data, destination, date))
         .catch(e => {
             console.log(e)
             resultDiv.innerHTML = `<h3>An error occured</h3>`

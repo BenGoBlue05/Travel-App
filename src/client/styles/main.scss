@@ -4,7 +4,11 @@
   $on-primary: #442b2d,
   $on-secondary: #442b2d,
 );
-@import "@material/button/mdc-button";
+@use "@material/card";
+@use "@material/button";
+
+@include card.core-styles;
+@include button.core-styles;
 
 .button-container {
   display: flex;
