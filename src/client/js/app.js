@@ -37,6 +37,10 @@ class TripInfo {
         this.geoProfile = geoProfile
         this.imageUrl = imageUrl
     }
+
+    static from(data = {}) {
+        return new TripInfo(data.name, data.date, data.weather, data.geoProfile, data.imageUrl)
+    }
 }
 
 let weatherBitApiKey = ''
@@ -111,6 +115,7 @@ function updateUI(tripInfo = TripInfo.prototype, title = '', subtitle = '') {
     resultDiv.innerHTML = uiHtml(title, subtitle, tripInfo.imageUrl, `${tripInfo.weather.temp}&#176;F`)
     document.getElementById('save-button').addEventListener('click', () => {
         postData('/api/add', tripInfo)
+            .then(() => fetchTrips())
     })
 }
 
@@ -134,8 +139,53 @@ function uiHtml(title = '', subtitle = '', img = '', body = '') {
     </div>`
 }
 
+function savedTripHtml(trip = TripInfo.prototype) {
+    return `<div>
+    <div>
+        <h2 class="mdc-typography mdc-typography--headline6">${trip.name}</h2>
+        <h3 class="mdc-typography mdc-typography--subtitle2">${trip.date}</h3>
+    </div>
+    <div>
+        <img src="${trip.imageUrl}" alt="Image" width="320" height="180">
+        <div class="mdc-typography mdc-typography--body2">${trip.weather.temp}&#176;F</div>
+    </div>
+    <div class="mdc-card__actions">
+        <div id="save-button" class="mdc-card__action-buttons">
+            <button class="mdc-button mdc-card__action mdc-card__action--button"><span
+                    class="mdc-button__ripple"></span> Delete
+            </button>
+        </div>
+        </div>
+    </div>`
+}
+
+function updateSavedTripsUI(trips = []) {
+    let htmlSegments = []
+    if (trips.length > 0) {
+        updateVisibility('saved-trips')
+    }
+    for (const trip of trips) {
+        htmlSegments.push(savedTripHtml(TripInfo.from(trip)))
+    }
+    document.getElementById('saved-list').innerHTML = htmlSegments.join('')
+}
+
+async function fetchTrips() {
+    fetchData('/api/trips').then(data => updateSavedTripsUI(data.trips))
+}
+
+function updateVisibility(elementId = '', isVisible = true) {
+    let visibility = 'visible'
+    if (!isVisible) {
+        visibility = 'hidden'
+    }
+    document.getElementById(elementId).style.visibility = visibility
+}
+
+updateVisibility('saved-trips', false)
 fetchWeatherBitApiKey()
 fetchPixabayApiKey()
+fetchTrips()
 
 document.getElementById('enter').addEventListener('click', () => {
     const date = document.getElementById('start').value

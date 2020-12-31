@@ -39,5 +39,15 @@ app.post('/api/add', (req, res) => {
     res.status(201).send({})
 })
 
+app.get('/api/trips', (_, res) => {
+    let trips = []
+    for (const trip of tripMap.values()) {
+        trips.push(trip)
+    }
+    const result = {trips: trips}
+    console.log(result)
+    res.status(200).send(result)
+})
+
 
 
