@@ -72,18 +72,14 @@ function uiHtml(title = '', subtitle = '', img = '', body = '') {
         <h2 class="mdc-typography mdc-typography--headline6">${title}</h2>
         <h3 class="mdc-typography mdc-typography--subtitle2">${subtitle}</h3>
     </div>
-    <div class="mdc-card__primary-action" tabindex="0">
-        <div class="mdc-card__media mdc-card__media--16-9"
-             style="background-image: url(${img});"></div>
+    <div>
+        <img src="${img}" alt="Image" width="320" height="180">
         <div class="mdc-typography mdc-typography--body2">${body}</div>
     </div>
     <div class="mdc-card__actions">
         <div class="mdc-card__action-buttons">
             <button class="mdc-button mdc-card__action mdc-card__action--button"><span
                     class="mdc-button__ripple"></span> Save
-            </button>
-            <button class="mdc-button mdc-card__action mdc-card__action--button"><span
-                    class="mdc-button__ripple"></span> Delete
             </button>
         </div>
     </div>`

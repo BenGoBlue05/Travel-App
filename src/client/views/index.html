@@ -5,21 +5,24 @@
     <title>Travel App</title>
 </head>
 <body>
-<label for="start">Start date:</label>
+<div class="grid-layout">
+    <div>
+        <label for="start">Start date:</label>
 
-<input type="date" id="start" name="trip-start"
-       value="2020-12-24"
-       min="2020-12-25" max="2022-01-01">
-<div>
-    <label for="name">Destination</label>
-    <textarea id="name" placeholder="Chicago, London, Boston"></textarea>
-</div>
+        <input type="date" id="start" name="trip-start"
+               value="2020-12-24"
+               min="2020-12-25" max="2022-01-01">
+        <div>
+            <label for="name">Destination</label>
+            <textarea id="name" placeholder="Chicago, London, Boston"></textarea>
+        </div>
 
-<button id="enter" type="submit" class="mdc-button mdc-button--raised next">
-    <div class="mdc-button__ripple"></div>
-    <span class="mdc-button__label">Enter</span>
-</button>
-<div id="result" class="mdc-card">
+        <button id="enter" type="submit" class="mdc-button mdc-button--raised">
+            <div class="mdc-button__ripple"></div>
+            <span class="mdc-button__label">Enter</span>
+        </button>
+    </div>
+    <div id="result"></div>
 </div>
 </body>
 </html>
