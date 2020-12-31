@@ -30,10 +30,12 @@ class PlaceInfo {
 }
 
 class TripInfo {
-    constructor(weather = WeatherInfo.prototype, geoProfile = GeoProfile.prototype, url = '') {
+    constructor(name = '', date = '', weather = WeatherInfo.prototype, geoProfile = GeoProfile.prototype, imageUrl = '') {
+        this.name = name
+        this.date = date
         this.weather = weather
         this.geoProfile = geoProfile
-        this.url = url
+        this.imageUrl = imageUrl
     }
 }
 
@@ -42,6 +44,18 @@ let pixabayApiKey = ''
 
 async function fetchData(url = '') {
     return fetch(url).then(data => data.json())
+}
+
+async function postData(url = '', body = {}) {
+    const request = {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    }
+    return fetch(url, request).then(data => data.json())
 }
 
 async function fetchWeatherBitApiKey() {
@@ -68,8 +82,7 @@ async function fetchTypicalWeather(lat = 0.0, lng = 0.0, date = '01-01') {
 }
 
 async function fetchPlaceInfo(destination = '', date = '') {
-    return fetchGeoProfile(destination)
-        .then(data => placeInfo(data, date))
+    return fetchGeoProfile(destination).then(data => placeInfo(data, date))
 }
 
 async function placeInfo(geoProfile = GeoProfile.prototype, date = '') {
@@ -88,16 +101,16 @@ async function fetchTripInfo(destination = '', date = '') {
         .then(results => {
             const placeInfo = results[0]
             const imgUrl = results[1]
-            return new TripInfo(placeInfo.weatherInfo, placeInfo.geoProfile, imgUrl)
+            return new TripInfo(destination, date, placeInfo.weatherInfo, placeInfo.geoProfile, imgUrl)
         })
 }
 
 const resultDiv = document.getElementById('result')
 
-function updateUI(data = TripInfo.prototype, title = '', subtitle = '') {
-    resultDiv.innerHTML = uiHtml(title, subtitle, data.url, `${data.weather.temp}&#176;F`)
+function updateUI(tripInfo = TripInfo.prototype, title = '', subtitle = '') {
+    resultDiv.innerHTML = uiHtml(title, subtitle, tripInfo.imageUrl, `${tripInfo.weather.temp}&#176;F`)
     document.getElementById('save-button').addEventListener('click', () => {
-
+        postData('/api/add', tripInfo)
     })
 }
 
@@ -129,10 +142,7 @@ document.getElementById('enter').addEventListener('click', () => {
     const destination = document.getElementById('name').value
     resultDiv.innerHTML = `<h3>...</h3>`
     fetchTripInfo(destination, date.slice(5))
-        .then(data => {
-            console.log(data)
-            updateUI(data, destination, date)
-        })
+        .then(data => updateUI(data, destination, date))
         .catch(e => {
             console.log(e)
             resultDiv.innerHTML = `<h3>An error occured</h3>`
