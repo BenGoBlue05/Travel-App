@@ -69,6 +69,7 @@ function updateUI(data = defaultTripInfo, title = '', subtitle = '') {
 
 function uiHtml(title = '', subtitle = '', img = '', body = '') {
     return `<div>
+    <div>
         <h2 class="mdc-typography mdc-typography--headline6">${title}</h2>
         <h3 class="mdc-typography mdc-typography--subtitle2">${subtitle}</h3>
     </div>
@@ -81,6 +82,7 @@ function uiHtml(title = '', subtitle = '', img = '', body = '') {
             <button class="mdc-button mdc-card__action mdc-card__action--button"><span
                     class="mdc-button__ripple"></span> Save
             </button>
+        </div>
         </div>
     </div>`
 }

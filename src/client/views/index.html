@@ -5,7 +5,7 @@
     <title>Travel App</title>
 </head>
 <body>
-<div class="grid-layout">
+<div class="main-layout">
     <div>
         <label for="start">Start date:</label>
 
@@ -22,7 +22,13 @@
             <span class="mdc-button__label">Enter</span>
         </button>
     </div>
-    <div id="result"></div>
+    <div id="result" class="preview">
+        <h2 class="mdc-typography mdc-typography--headline6">Preview</h2>
+    </div>
+    <div id="saved-trips">
+        <h2 class="mdc-typography mdc-typography--headline6">Saved Trips</h2>
+        <div id="saved-list"></div>
+    </div>
 </div>
 </body>
 </html>
