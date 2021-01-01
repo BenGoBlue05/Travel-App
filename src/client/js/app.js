@@ -30,16 +30,17 @@ class PlaceInfo {
 }
 
 class TripInfo {
-    constructor(name = '', date = '', weather = WeatherInfo.prototype, geoProfile = GeoProfile.prototype, imageUrl = '') {
+    constructor(name = '', date = '', weather = WeatherInfo.prototype, geoProfile = GeoProfile.prototype, imageUrl = '', id = '') {
         this.name = name
         this.date = date
         this.weather = weather
         this.geoProfile = geoProfile
         this.imageUrl = imageUrl
+        this.id = id
     }
 
     static from(data = {}) {
-        return new TripInfo(data.name, data.date, data.weather, data.geoProfile, data.imageUrl)
+        return new TripInfo(data.name, data.date, data.weather, data.geoProfile, data.imageUrl, data.id)
     }
 }
 
@@ -53,6 +54,18 @@ async function fetchData(url = '') {
 async function postData(url = '', body = {}) {
     const request = {
         method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    }
+    return fetch(url, request).then(data => data.json())
+}
+
+async function deleteData(url = '', body = {}) {
+    const request = {
+        method: 'DELETE',
         credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json'
@@ -150,7 +163,7 @@ function savedTripHtml(trip = TripInfo.prototype) {
         <div class="mdc-typography mdc-typography--body2">${trip.weather.temp}&#176;F</div>
     </div>
     <div class="mdc-card__actions">
-        <div id="save-button" class="mdc-card__action-buttons">
+        <div data-trip-id="${trip.id}" class="mdc-card__action-buttons">
             <button class="mdc-button mdc-card__action mdc-card__action--button"><span
                     class="mdc-button__ripple"></span> Delete
             </button>
@@ -159,15 +172,22 @@ function savedTripHtml(trip = TripInfo.prototype) {
     </div>`
 }
 
+async function deleteTrip(id = '') {
+    deleteData('api/trip', {id: id})
+        .then(() => fetchTrips())
+}
+
 function updateSavedTripsUI(trips = []) {
     let htmlSegments = []
-    if (trips.length > 0) {
-        updateVisibility('saved-trips')
-    }
+    updateVisibility('saved-trips', trips.length > 0)
     for (const trip of trips) {
         htmlSegments.push(savedTripHtml(TripInfo.from(trip)))
     }
     document.getElementById('saved-list').innerHTML = htmlSegments.join('')
+    const buttons = document.querySelectorAll('div[data-trip-id]')
+    buttons.forEach(button => {
+        button.addEventListener('click', () => deleteTrip(button.dataset.tripId))
+    })
 }
 
 async function fetchTrips() {

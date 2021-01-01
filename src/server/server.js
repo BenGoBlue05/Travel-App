@@ -33,20 +33,28 @@ app.get('/api/pixabayKey', (_, res) => {
 
 app.post('/api/add', (req, res) => {
     const body = req.body
-    const key = `{${body.date}|${body.name}`
-    tripMap.set(key, body)
-    console.log(tripMap.values())
+    const id = `${body.date}|${body.name}`
+    tripMap.set(id, body)
     res.status(201).send({})
 })
 
 app.get('/api/trips', (_, res) => {
     let trips = []
     for (const trip of tripMap.values()) {
+        trip.id = `${trip.date}|${trip.name}`
         trips.push(trip)
     }
-    const result = {trips: trips}
-    console.log(result)
-    res.status(200).send(result)
+    res.status(200).send({trips: trips})
+})
+
+app.delete('/api/trip', (req, res) => {
+    const id = req.body.id
+    const deleted = tripMap.delete(id)
+    if (deleted) {
+        res.status(200).send({})
+    } else {
+        res.status(404).send({error: `Trip ID ${id} not found`})
+    }
 })
 
 
