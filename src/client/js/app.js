@@ -49,6 +49,8 @@ let pixabayApiKey = ''
 
 const US_COUNTRY_ID = '6252001'
 
+const DAY_IN_MILLIS = 1000 * 60 * 60 * 24
+
 async function fetchData(url = '') {
     return fetch(url).then(data => data.json())
 }
@@ -100,12 +102,35 @@ async function fetchTypicalWeather(lat = 0.0, lng = 0.0, date = '01-01') {
     return fetchData(url).then(data => new WeatherInfo(data.data[0].temp))
 }
 
+async function fetchWeatherForecast(lat = 0.0, lng = 0.0, date = '') {
+    const url = `https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lng}&units=I&key=${weatherBitApiKey}`
+    return fetchData(url).then(data => {
+        for (const forecast of data.data) {
+            if (forecast.datetime === date) {
+                return new WeatherInfo(forecast.temp, 'forecast')
+            }
+        }
+        throw 'Date not found'
+    })
+}
+
+async function fetchWeather(lat = 0.0, lng = 0.0, date = '') {
+    const dateInMillis = dateToMillis(date)
+    const duration = dateInMillis - new Date().getTime()
+    const tenDays = DAY_IN_MILLIS * 10
+    if (duration < tenDays) {
+        return fetchWeatherForecast(lat, lng, date)
+    } else {
+        return fetchTypicalWeather(lat, lng, date.slice(5))
+    }
+}
+
 async function fetchPlaceInfo(destination = '', date = '') {
     return fetchGeoProfile(destination).then(data => placeInfo(data, date))
 }
 
 async function placeInfo(geoProfile = GeoProfile.prototype, date = '') {
-    return fetchTypicalWeather(geoProfile.lat, geoProfile.lng, date.slice(5))
+    return fetchWeather(geoProfile.lat, geoProfile.lng, date)
         .then(data => new PlaceInfo(geoProfile, data))
 }
 
@@ -126,12 +151,13 @@ async function fetchTripInfo(destination = '', date = '') {
 
 const resultDiv = document.getElementById('result')
 
-function formattedTemp(temp = 0.0) {
-    return `Typically ${temp}&#176;F`
+function formattedTemp(weather = WeatherInfo.prototype) {
+    const temp = `${weather.temp}&#176;F`
+    return weather.type === 'forecast' ? `Forecast: ${temp}` : `Typically ${temp}`
 }
 
 function updateUI(tripInfo = TripInfo.prototype) {
-    resultDiv.innerHTML = uiHtml(tripInfo.name, tripInfo.date, tripInfo.imageUrl, formattedLocation(tripInfo.geoProfile), formattedTemp(tripInfo.weather.temp))
+    resultDiv.innerHTML = uiHtml(tripInfo.name, tripInfo.date, tripInfo.imageUrl, formattedLocation(tripInfo.geoProfile), formattedTemp(tripInfo.weather))
     document.getElementById('save-button').addEventListener('click', () => {
         postData('/api/add', tripInfo)
             .then(() => fetchTrips())
@@ -146,6 +172,15 @@ function formattedLocation(geoProfile = GeoProfile.prototype) {
         return `${geoProfile.name}, ${geoProfile.countryName}`
     }
     return geoProfile.name
+}
+
+function dateToMillis(date = '2021-08-25') {
+    const year = parseInt(date.slice(0, 4))
+    const month = parseInt(date.slice(5, 7))
+    const day = parseInt(date.slice(8))
+    const res = new Date()
+    res.setFullYear(year, month - 1, day)
+    return res.getTime()
 }
 
 function uiHtml(title = '', subtitle = '', img = '', bodyLine1 = '', bodyLine2 = '') {
@@ -178,7 +213,7 @@ function savedTripHtml(trip = TripInfo.prototype) {
     <div>
         <img src="${trip.imageUrl}" alt="Image" width="320" height="180">
         <div class="mdc-typography mdc-typography--body2">${formattedLocation(trip.geoProfile)}</div>
-        <div class="mdc-typography mdc-typography--body2">${formattedTemp(trip.weather.temp)}</div>
+        <div class="mdc-typography mdc-typography--body2">${formattedTemp(trip.weather)}</div>
     </div>
     <div class="mdc-card__actions">
         <div data-trip-id="${trip.id}" class="mdc-card__action-buttons">
