@@ -231,6 +231,7 @@ function setMinDate() {
 }
 
 setMinDate()
+updateVisibility('error-text', false)
 updateVisibility('saved-trips', false)
 fetchWeatherBitApiKey()
 fetchPixabayApiKey()
@@ -239,6 +240,11 @@ fetchTrips()
 document.getElementById('enter').addEventListener('click', () => {
     const date = document.getElementById('start').value
     const destination = document.getElementById('name').value
+    if (!destination || destination.length === 0) {
+        updateVisibility('error-text', true)
+        return
+    }
+    updateVisibility('error-text', false)
     resultDiv.innerHTML = `<h3>...</h3>`
     fetchTripInfo(destination, date)
         .then(data => updateUI(data, destination, date))
