@@ -7,7 +7,7 @@ class WeatherInfo {
 
 class GeoProfile {
 
-    constructor(name = '', adminCode1 = '', fcl = '', countryId = 0, countryName = '', lat = 0.0, lng = 0.0) {
+    constructor(name = '', adminCode1 = '', fcl = '', countryId = '', countryName = '', lat = 0.0, lng = 0.0) {
         this.name = name;
         this.adminCode1 = adminCode1;
         this.fcl = fcl;
@@ -46,6 +46,8 @@ class TripInfo {
 
 let weatherBitApiKey = ''
 let pixabayApiKey = ''
+
+const US_COUNTRY_ID = '6252001'
 
 async function fetchData(url = '') {
     return fetch(url).then(data => data.json())
@@ -103,7 +105,7 @@ async function fetchPlaceInfo(destination = '', date = '') {
 }
 
 async function placeInfo(geoProfile = GeoProfile.prototype, date = '') {
-    return fetchTypicalWeather(geoProfile.lat, geoProfile.lng, date)
+    return fetchTypicalWeather(geoProfile.lat, geoProfile.lng, date.slice(5))
         .then(data => new PlaceInfo(geoProfile, data))
 }
 
@@ -124,15 +126,29 @@ async function fetchTripInfo(destination = '', date = '') {
 
 const resultDiv = document.getElementById('result')
 
-function updateUI(tripInfo = TripInfo.prototype, title = '', subtitle = '') {
-    resultDiv.innerHTML = uiHtml(title, subtitle, tripInfo.imageUrl, `${tripInfo.weather.temp}&#176;F`)
+function formattedTemp(temp = 0.0) {
+    return `Typically ${temp}&#176;F`
+}
+
+function updateUI(tripInfo = TripInfo.prototype) {
+    resultDiv.innerHTML = uiHtml(tripInfo.name, tripInfo.date, tripInfo.imageUrl, formattedLocation(tripInfo.geoProfile), formattedTemp(tripInfo.weather.temp))
     document.getElementById('save-button').addEventListener('click', () => {
         postData('/api/add', tripInfo)
             .then(() => fetchTrips())
     })
 }
 
-function uiHtml(title = '', subtitle = '', img = '', body = '') {
+function formattedLocation(geoProfile = GeoProfile.prototype) {
+    if (geoProfile.fcl === 'P') {
+        if (geoProfile.countryId === US_COUNTRY_ID) {
+            return `${geoProfile.name}, ${geoProfile.adminCode1}`
+        }
+        return `${geoProfile.name}, ${geoProfile.countryName}`
+    }
+    return geoProfile.name
+}
+
+function uiHtml(title = '', subtitle = '', img = '', bodyLine1 = '', bodyLine2 = '') {
     return `<div>
     <div>
         <h2 class="mdc-typography mdc-typography--headline6">${title}</h2>
@@ -140,7 +156,8 @@ function uiHtml(title = '', subtitle = '', img = '', body = '') {
     </div>
     <div>
         <img src="${img}" alt="Image" width="320" height="180">
-        <div class="mdc-typography mdc-typography--body2">${body}</div>
+        <div class="mdc-typography mdc-typography--body2">${bodyLine1}</div>
+        <div class="mdc-typography mdc-typography--body2">${bodyLine2}</div>
     </div>
     <div class="mdc-card__actions">
         <div id="save-button" class="mdc-card__action-buttons">
@@ -160,7 +177,8 @@ function savedTripHtml(trip = TripInfo.prototype) {
     </div>
     <div>
         <img src="${trip.imageUrl}" alt="Image" width="320" height="180">
-        <div class="mdc-typography mdc-typography--body2">${trip.weather.temp}&#176;F</div>
+        <div class="mdc-typography mdc-typography--body2">${formattedLocation(trip.geoProfile)}</div>
+        <div class="mdc-typography mdc-typography--body2">${formattedTemp(trip.weather.temp)}</div>
     </div>
     <div class="mdc-card__actions">
         <div data-trip-id="${trip.id}" class="mdc-card__action-buttons">
@@ -222,7 +240,7 @@ document.getElementById('enter').addEventListener('click', () => {
     const date = document.getElementById('start').value
     const destination = document.getElementById('name').value
     resultDiv.innerHTML = `<h3>...</h3>`
-    fetchTripInfo(destination, date.slice(5))
+    fetchTripInfo(destination, date)
         .then(data => updateUI(data, destination, date))
         .catch(e => {
             console.log(e)
