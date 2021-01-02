@@ -202,6 +202,17 @@ function updateVisibility(elementId = '', isVisible = true) {
     document.getElementById(elementId).style.visibility = visibility
 }
 
+function setMinDate() {
+    const [month, date, year] = new Date().toLocaleDateString("en-US").split("/")
+    const formattedMonth = month < 10 ? `0${month}` : `${month}`
+    const formattedDay = date < 10 ? `0${date}` : `${date}`
+    const minDate = `${year}-${formattedMonth}-${formattedDay}`
+    const datePicker = document.getElementById('start')
+    datePicker.setAttribute('min', minDate)
+    datePicker.setAttribute('value', minDate)
+}
+
+setMinDate()
 updateVisibility('saved-trips', false)
 fetchWeatherBitApiKey()
 fetchPixabayApiKey()
