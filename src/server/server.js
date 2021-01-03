@@ -44,6 +44,7 @@ app.get('/api/trips', (_, res) => {
     for (const trip of tripMap.values()) {
         trips.push(trip)
     }
+    trips.sort((trip1, trip2) => sortTripsByDate(trip1, trip2))
     res.status(200).send({trips: trips})
 })
 
@@ -56,6 +57,19 @@ app.delete('/api/trip', (req, res) => {
         res.status(404).send({error: `Trip ID ${id} not found`})
     }
 })
+
+function dateToMillis(date = '2021-08-25') {
+    const year = parseInt(date.slice(0, 4))
+    const month = parseInt(date.slice(5, 7))
+    const day = parseInt(date.slice(8, 10))
+    const res = new Date()
+    res.setFullYear(year, month - 1, day)
+    return res.getTime()
+}
+
+function sortTripsByDate(trip1 = {}, trip2 = {}) {
+    return dateToMillis(trip1.id) - dateToMillis(trip2.id)
+}
 
 
 
