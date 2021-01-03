@@ -34,6 +34,7 @@ app.get('/api/pixabayKey', (_, res) => {
 app.post('/api/add', (req, res) => {
     const body = req.body
     const id = `${body.date}|${body.name}`
+    body.id = id
     tripMap.set(id, body)
     res.status(201).send({})
 })
@@ -41,7 +42,6 @@ app.post('/api/add', (req, res) => {
 app.get('/api/trips', (_, res) => {
     let trips = []
     for (const trip of tripMap.values()) {
-        trip.id = `${trip.date}|${trip.name}`
         trips.push(trip)
     }
     res.status(200).send({trips: trips})
