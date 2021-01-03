@@ -27,7 +27,7 @@ module.exports = {
         new MiniCssExtractPlugin({filename: '[name].css'})
     ],
     output: {
-        filename: '[name].bundle.js',
-        path: path.resolve(__dirname, 'dist'),
+        libraryTarget: 'var',
+        library: 'Client'
     },
 }
