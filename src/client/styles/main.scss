@@ -1,15 +1,3 @@
-@use "@material/theme" with (
-  $primary: #fcb8ab,
-  $secondary: #feeae6,
-  $on-primary: #442b2d,
-  $on-secondary: #442b2d,
-);
-@use "@material/card";
-@use "@material/button";
-
-@include card.core-styles;
-@include button.core-styles;
-
 .button-container {
   display: flex;
   justify-content: flex-end;
