@@ -10,6 +10,10 @@ const US_COUNTRY_ID = '6252001'
 
 const DAY_IN_MILLIS = 1000 * 60 * 60 * 24
 
+const KEY_PIXABAY = 'pixabayKey'
+
+const KEY_WEATHERBIT = 'weatherBitKey'
+
 async function fetchData(url = '') {
     return fetch(url).then(data => data.json())
 }
@@ -39,14 +43,22 @@ async function deleteData(url = '', body = {}) {
 }
 
 async function fetchWeatherBitApiKey() {
+    weatherBitApiKey = localStorage.getItem(KEY_WEATHERBIT)
     fetchData('/api/weatherbitKey')
-        .then(data => weatherBitApiKey = data.key)
+        .then(data => {
+            localStorage.setItem(KEY_WEATHERBIT, data.key)
+            weatherBitApiKey = data.key
+        })
         .catch(e => console.log('Error:', e))
 }
 
 async function fetchPixabayApiKey() {
+    pixabayApiKey = localStorage.getItem(KEY_PIXABAY)
     fetchData('/api/pixabayKey')
-        .then(data => pixabayApiKey = data.key)
+        .then(data => {
+            localStorage.setItem(KEY_PIXABAY, data.key)
+            pixabayApiKey = data.key
+        })
         .catch(e => console.log('Error:', e))
 }
 
@@ -203,7 +215,9 @@ function updateSavedTripsUI(trips = []) {
 }
 
 async function fetchTrips() {
-    fetchData('/api/trips').then(data => updateSavedTripsUI(data.trips))
+    fetchData('/api/trips')
+        .then(data => updateSavedTripsUI(data.trips))
+        .catch(e => console.log('Error', e))
 }
 
 function updateVisibility(elementId = '', isVisible = true) {
