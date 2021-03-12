@@ -13,8 +13,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@material/button": "^8.0.0",
-    "@material/card": "^10.0.0",
     "@material/theme": "^8.0.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
