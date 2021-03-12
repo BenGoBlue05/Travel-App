@@ -1,3 +1,5 @@
+@import "themes";
+
 .button-container {
   display: flex;
   justify-content: flex-end;
@@ -7,7 +9,16 @@
 
 .main-layout {
   display: flex;
-  flex-flow: row wrap;
+  flex-direction: column;
+  position: absolute; /* new */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ta-card {
+  width: 400px;
+  margin: 50px 50px 0 50px;
+  padding: 20px;
 }
 
 .error {

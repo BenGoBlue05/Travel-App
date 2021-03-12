@@ -176,7 +176,7 @@ function uiHtml(title = '', subtitle = '', img = '', bodyLine1 = '', bodyLine2 =
 }
 
 function savedTripHtml(trip = TripInfo.prototype) {
-    return `<div>
+    return `<div class="mdc-card ta-card">
     <div>
         <h2 class="mdc-typography mdc-typography--headline6">${trip.name}</h2>
         <h3 class="mdc-typography mdc-typography--subtitle2">${trip.date}</h3>
