@@ -6,11 +6,11 @@ Udacity FEND capstone
 
 ### 1. Add Weatherbit API Key
 Sign up for [Weatherbit API key](https://www.weatherbit.io/account/create). 
-In `.env` replace 'WEATHERBIT_API_KEY' w/ the your new api key.
+In `.env` replace 'YOUR_WEATHERBIT_API_KEY' w/ the your new api key.
 
 ### 2. Add PIXABAY_API_KEY API Key
 Sign up for [Pixabay API key](https://pixabay.com/api/docs/). 
-In `.env` replace 'PIXABAY_API_KEY' w/ the your new api key.
+In `.env` replace 'YOUR_PIXABAY_API_KEY' w/ the your new api key.
 
 ### 3. Run
 ```
