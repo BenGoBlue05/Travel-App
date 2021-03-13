@@ -219,7 +219,7 @@ function updateSavedTripsUI(trips = []) {
 }
 
 async function fetchTrips() {
-    fetchData('/api/trips')
+    fetchData('/api/all')
         .then(data => updateSavedTripsUI(data.trips))
         .catch(e => console.log('Error', e))
 }

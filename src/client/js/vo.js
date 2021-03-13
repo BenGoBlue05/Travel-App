@@ -17,6 +17,7 @@ export class GeoProfile {
         this.lng = lng;
     }
 
+    // converts json response to GeoProfile value object
     static from(data = {}) {
         return new GeoProfile(data.name, data.adminCode1, data.fcl, data.countryId, data.countryName, data.lat, data.lng)
     }
@@ -39,6 +40,7 @@ export class TripInfo {
         this.id = id
     }
 
+    // converts json response to TripInfo value object
     static from(data = {}) {
         return new TripInfo(data.name, data.date, data.weather, data.geoProfile, data.imageUrl, data.id)
     }

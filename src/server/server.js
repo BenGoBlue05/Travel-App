@@ -39,7 +39,7 @@ app.post('/api/add', (req, res) => {
     res.status(201).send({})
 })
 
-app.get('/api/trips', (_, res) => {
+app.get('/api/all', (_, res) => {
     let trips = []
     for (const trip of tripMap.values()) {
         trips.push(trip)
@@ -70,6 +70,8 @@ function dateToMillis(date = '2021-08-25') {
 function sortTripsByDate(trip1 = {}, trip2 = {}) {
     return dateToMillis(trip1.id) - dateToMillis(trip2.id)
 }
+
+module.exports = {app}
 
 
 

@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import {formattedTemp} from "../client/js/app";
 import {WeatherInfo} from "../client/js/vo";
 
