@@ -43,9 +43,11 @@ async function deleteData(url = '', body = {}) {
 }
 
 async function fetchWeatherBitApiKey() {
+    // set to cached key first in case request for api key fails
     weatherBitApiKey = localStorage.getItem(KEY_WEATHERBIT)
     fetchData('/api/weatherbitKey')
         .then(data => {
+            // save updated key to local storage
             localStorage.setItem(KEY_WEATHERBIT, data.key)
             weatherBitApiKey = data.key
         })
@@ -53,9 +55,11 @@ async function fetchWeatherBitApiKey() {
 }
 
 async function fetchPixabayApiKey() {
+    // set to cached key first in case request for api key fails
     pixabayApiKey = localStorage.getItem(KEY_PIXABAY)
     fetchData('/api/pixabayKey')
         .then(data => {
+            // save updated key to local storage
             localStorage.setItem(KEY_PIXABAY, data.key)
             pixabayApiKey = data.key
         })
@@ -238,6 +242,7 @@ function setMinDate() {
     datePicker.setAttribute('value', minDate)
 }
 
+// add click listener for when user hits 'enter' for destination and date submission
 function addSubmitClickListener() {
     document.getElementById('enter').addEventListener('click', () => {
         const date = document.getElementById('start').value
