@@ -1,6 +1,7 @@
 # Travel-App
 Udacity FEND capstone
 
+A web app for travel planning where you can save trips, view destination images, and view weather forecasts or typical weather for dates in the future.
 
 ## How to run
 
@@ -34,3 +35,7 @@ npm i -D
 npm run build-dev
 ```
 This should automatically open a tab in browser at http://localhost:9000/ 
+
+
+## Dependencies
+Most notable dependencies are related to Google's [MDC Library](https://material.io/develop/web)
