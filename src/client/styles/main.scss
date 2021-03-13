@@ -3,13 +3,6 @@ body {
   --mdc-theme-primary: blue;
 }
 
-.button-container {
-  display: flex;
-  justify-content: flex-end;
-  width: 300px;
-  margin: auto;
-}
-
 .main-layout {
   margin-top: 48px;
   display: flex;
@@ -36,25 +29,6 @@ body {
 
 .error {
   color: red;
-}
-
-.preview {
-  min-width: 320px;
-  margin: 0 25px;
-}
-
-.card-img {
-  width: 320px;
-  height: 180px;
-}
-
-.button-container button {
-  margin: 3px;
-}
-
-.saved-list {
-  display: flex;
-  flex-flow: row wrap;
 }
 
 label {
