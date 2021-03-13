@@ -1,3 +1,3 @@
 import './styles/main.scss'
 
-require('./js/app')
+require('./js/app').run()

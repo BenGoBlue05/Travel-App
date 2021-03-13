@@ -122,7 +122,7 @@ async function fetchTripInfo(destination = '', date = '') {
 
 const resultDiv = document.getElementById('result')
 
-function formattedTemp(weather = WeatherInfo.prototype) {
+export function formattedTemp(weather = WeatherInfo.prototype) {
     const temp = `${weather.temp}&#176;F`
     return weather.type === 'forecast' ? `Forecast: ${temp}` : `Typically ${temp}`
 }
@@ -238,27 +238,32 @@ function setMinDate() {
     datePicker.setAttribute('value', minDate)
 }
 
-setMinDate()
-updateVisibility('error-text', false)
-updateVisibility('saved-trips', false)
-fetchWeatherBitApiKey()
-fetchPixabayApiKey()
-fetchTrips()
+function addSubmitClickListener() {
+    document.getElementById('enter').addEventListener('click', () => {
+        const date = document.getElementById('start').value
+        const destination = document.getElementById('name').value
+        if (!destination || destination.length === 0) {
+            updateVisibility('error-text', true)
+            return
+        }
+        updateVisibility('error-text', false)
+        resultDiv.innerHTML = `<h3>...</h3>`
+        fetchTripInfo(destination, date)
+            .then(data => updateUI(data, destination, date))
+            .catch(e => {
+                console.log(e)
+                resultDiv.innerHTML = `<h3>An error occured</h3>`
+            })
+    })
+}
 
-document.getElementById('enter').addEventListener('click', () => {
-    const date = document.getElementById('start').value
-    const destination = document.getElementById('name').value
-    if (!destination || destination.length === 0) {
-        updateVisibility('error-text', true)
-        return
-    }
+export function run() {
+    setMinDate()
     updateVisibility('error-text', false)
-    resultDiv.innerHTML = `<h3>...</h3>`
-    fetchTripInfo(destination, date)
-        .then(data => updateUI(data, destination, date))
-        .catch(e => {
-            console.log(e)
-            resultDiv.innerHTML = `<h3>An error occured</h3>`
-        })
-})
+    updateVisibility('saved-trips', false)
+    fetchWeatherBitApiKey()
+    fetchPixabayApiKey()
+    fetchTrips()
+    addSubmitClickListener()
+}
 
